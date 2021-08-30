@@ -16,11 +16,13 @@ function MessageList(props) {
   const getMessages = useCallback ((timestamp, data) => {
     api.get(`get-messages`, {timestamp})
     .then(newData => {
-       console.log("#####get-messages ",newData.length," messages since ",timestamp, (new Date(timestamp)).toLocaleString());
-        setData(data.concat(newData));
-        //Let scroll down the DIV to show the lastest messages
-        let divMsg = document.getElementById("messages");
-        divMsg.scrollTop = divMsg.scrollHeight;
+        console.log("#####get-messages ",newData?.length," messages since ",timestamp, (new Date(timestamp)).toLocaleString());
+	    if (newData){
+			setData(data.concat(newData));
+			//Let scroll down the DIV to show the lastest messages
+			let divMsg = document.getElementById("messages");
+			divMsg.scrollTop = divMsg.scrollHeight;
+		}
     })
   },[]);
 
