@@ -1,0 +1,25 @@
+.toast {
+    max-width: 80%;
+    min-width: 250px;
+}
+
+.toast.show {
+    display: table;
+}
+
+.toast:not(:last-child) {
+    margin-bottom: 0.3rem;
+}
+
+.toast-body {
+    padding: .5rem;
+}
+
+.my-message {
+    margin-left: 20%
+}
+
+.my-message .toast-header,
+.my-message .toast-body {
+    background-color: azure
+}

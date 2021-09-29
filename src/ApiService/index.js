@@ -9,19 +9,19 @@ class ApiService {
     this._init();
   }
 
-  async get(key, params={}, force=false) {
+  async get(key, params={}, config={}, useCache=true) {
     const endpoint  = conf.endpoints[key];
 
     let sessionKey = conf.sessionPrefix ? conf.sessionPrefix  + '-' : '';
     sessionKey += params.id ? key + '-' + params.id : key;
 
-    const inSession  = endpoint.isCached && !force && this._getSession(sessionKey);
+    const inSession  = endpoint.isCached && useCache && this._getSession(sessionKey);
     if (inSession) {
       return inSession;
     }
 
     const path   = this._endpointPath(endpoint, params);
-    const result = await axios.get(path).catch(err => err);
+    const result = await axios.get(path, config);
  
     if (result.status > 200) {
       console.error('Api call returned an error', result);
@@ -37,20 +37,20 @@ class ApiService {
     return value;
   }
 
-  async post(key, params={}, body={}) {
+  async post(key, params={}, body={}, config={}) {
     const endpoint  = conf.endpoints[key];
 
     const path   = this._endpointPath(endpoint, params);
-    const result = await axios.post(path, body);
+    const result = await axios.post(path, body, config);
 
     return result.data;
   }
 
-  async put(key, params={}, body={}) {
+  async put(key, params={}, body={}, config={}) {
     const endpoint  = conf.endpoints[key];
 
     const path   = this._endpointPath(endpoint, params);
-    const result = await axios.put(path, body);
+    const result = await axios.put(path, body, config);
 
     return result.data;
   }
@@ -111,4 +111,6 @@ class ApiService {
   }
 }
 
-export default ApiService;
+const apiSrv = new ApiService();
+export default apiSrv;
+

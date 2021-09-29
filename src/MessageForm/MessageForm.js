@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form'
-import ApiService from '../ApiService';
 import InputGroup from 'react-bootstrap/InputGroup'
 import Button from 'react-bootstrap/Button'
-
-const api = new ApiService();
+import { useSelector, useDispatch} from 'react-redux';
+import { createMessage} from '../MessageList/messageAction';
 
 function MessageForm(props) {
 
   const [ message, setMessage ] = useState("");
 
+  const user = useSelector((state) => state.login.user);  // useSelector subscribe for update on state.<sliceName>.<value>
+  const dispatch = useDispatch()   // useDispatch give access to methode to push a change on state
 
   //no magic binding in React, you need to create a onchange function :-(
   function handleChange(event) {
@@ -18,15 +19,12 @@ function MessageForm(props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log('A message was submitted: ' + message, props.login);
-    let payload = { texte: message, user : props.login };
-    api.post(`create-message`, {},payload)
-    .then(data => {
-      props.onSubmit();
-    })
+    dispatch(createMessage(message, user)); //dispatch action to Store
   }
 
-    return <form onSubmit={handleSubmit}>
+    return <>
+    { user && 
+    <form onSubmit={handleSubmit}>
         <InputGroup className="mb-3">
           <Form.Control as="textarea" 
               rows={3} 
@@ -36,6 +34,8 @@ function MessageForm(props) {
           <Button type="submit" variant="outline-primary" id="button-addon2">Send Message</Button>
         </InputGroup>
     </form>
+    }
+    </>
 
 }
 
